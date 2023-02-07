@@ -1,7 +1,8 @@
 import './App.css';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSound } from 'use-sound';
+import { MdDone } from "react-icons/md";
 import crossOutSound from './cross.mp3';
 import addSound from './add.mp3';
 import deleteSound from './delete.mp3';
@@ -28,6 +29,18 @@ const App = () => {
     setTasks(tasks.map((task) => (task.id === id ? { ...task, isCompleted: !task.isCompleted } : task)));
   };
 
+  useEffect(() => {
+    const message = document.getElementById('congrats')
+    if (tasks.length && tasks.every((task) => task.isCompleted === true)) {
+      message.classList.remove("hidden")
+    }
+    else {
+      if(!message.classList.contains("hidden")){
+        message.classList.add("hidden")
+      }
+    }
+  })
+
   const handleDelete = (id) => {
     playDeleteSound()
     setTasks(tasks.filter((task) => task.id !== id));
@@ -42,17 +55,21 @@ const App = () => {
       <div className="flex flex-col justify-center text-center">
         <h1 className="text-3xl pb-10">Simple Todo List Application</h1>
         <form onSubmit={handleSubmit}>
-          <input className="px-4 py-1 bg-gray-100 border rounded-md" type="text" value={inputValue} onChange={handleChange} />
-          <button className="bg-red-100" type="submit" onClick={playAddSound}>Add</button>
+          <input className="px-4 py-1 bg-gray-100 border rounded-md mr-4" type="text" value={inputValue} onChange={handleChange} />
+          <button className="py-1 px-3 bg-blue-200 border rounded-md hover:bg-blue-300" type="submit" onClick={playAddSound}>Add</button>
         </form>
-        <ul>
+        <ul className="py-8 list-decimal">
           {tasks.map((task) => (
-            <li key={task.id} className={task.isCompleted ? "completed task-item" : "task-item"} onClick={() => handleComplete(task.id)}>
+            <span><li key={task.id} className={task.isCompleted ? "completed task-item py-2" : "task-item py-2"} onClick={() => handleComplete(task.id)}>
               {task.text}
-              <button id="delete-btn" className="delete-button" onClick={(e) => { e.stopPropagation(); handleDelete(task.id) }}>Delete</button>
-            </li>
+              <button id="delete-btn" className="delete-button ml-2 py-1 px-2 bg-red-200 border rounded-md hover:bg-red-300" onClick={(e) => { e.stopPropagation(); handleDelete(task.id) }}>Delete</button>
+            </li></span>
           ))}
         </ul>
+        <div id='congrats' className='task-item hidden'>
+          <h1 className='spin-text text-2xl text-blue-800'>Congratulations!</h1>
+          <p>You completed all tasks!</p>
+        </div>
       </div>
     </div>
   );

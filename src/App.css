@@ -7,6 +7,19 @@
   }
 }
 
+@keyframes spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+.spin-text {
+  animation: spin 2s linear infinite;
+}
+
 .task-item {
   animation: fadeIn 0.5s ease-in-out;
 }
